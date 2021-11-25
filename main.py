@@ -1,25 +1,29 @@
 import json
 import requests  
 from flask import Flask
-from flask import request
-import os 
-import csv
-import json
+
+
 
 app = Flask (__name__)
 
 
-if __name__=="__main__":
-    price_list = []
-    response = requests.get("http://api.nbp.pl/api/cenyzlota/last/30/?format=json")
-    data=response.json()
-    print(type(data))
-    print(f"zawartosć data to : {data[-2:-1]}")
-    for i in data:
-        #print(f"data: {i['data']} cena tego dnia {i['cena']}")
-        price_list.append(i['cena'])
+#if __name__=="__main__":
+price_list = []
+response = requests.get("http://api.nbp.pl/api/cenyzlota/last/30/?format=json")
+data=response.json()
+print(type(data))
+print(f"zawartosć data to : {data[-2:-1]}")
+for i in data:
+    #print(f"data: {i['data']} cena tego dnia {i['cena']}")
+    price_list.append(i['cena'])
     
-    print (f"dzisiejsza cena wzgledem wczorajszej : {round(float(price_list[-1]-price_list[-2]),2)},zł" )
+@app.route("/")
+def main():
+    return f"dzisiejsza cena wzgledem wczorajszej : {round(float(price_list[-1]-price_list[-2]),2)},zł" 
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 """with open("baza.csv",'w') as f:
         writer = csv.writer(f) #inicjalizuje zapisywacz
